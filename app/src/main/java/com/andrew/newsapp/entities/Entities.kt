@@ -2,9 +2,11 @@ package com.andrew.newsapp.entities
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class NewsResponse(
     val status: String? = "",
     val copyright: String = "",
@@ -17,6 +19,7 @@ data class NewsResponse(
 ) : Parcelable
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class NewsPiece(
     val section: String? = "",
     val subsection: String? = "",
@@ -50,6 +53,7 @@ data class NewsPiece(
 ) : Parcelable
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Multimedia(
     val url: String? = "",
     val format: String? = "",
@@ -59,4 +63,29 @@ data class Multimedia(
     val subtype: String? = "",
     val caption: String? = "",
     val copyright: String? = ""
+) : Parcelable
+
+@Parcelize
+data class DpNewsPiece(
+    val section: String? = "",
+    val subsection: String? = "",
+    val title: String? = "",
+    val abstract: String? = "",
+    val byline: String? = "",
+    @Json(name = "updated_date")
+    val updateDate: String? = "",
+    @Json(name = "des_facet")
+    val descriptionFacet: List<String>? = listOf(),
+    @Json(name = "geo_facet")
+    val geoFacet: List<String>? = listOf(),
+    val multimedia: List<DbMultimedia>? = listOf(),
+    @Json(name = "short_url")
+    val shortUrl: String? = "",
+    var isFavourite: Boolean = false
+) : Parcelable
+
+@Parcelize
+data class DbMultimedia(
+    val url: String? = "",
+    val format: String? = ""
 ) : Parcelable
