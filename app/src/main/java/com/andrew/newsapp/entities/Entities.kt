@@ -1,6 +1,8 @@
 package com.andrew.newsapp.entities
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
@@ -66,21 +68,19 @@ data class Multimedia(
 ) : Parcelable
 
 @Parcelize
-data class DpNewsPiece(
-    val section: String? = "",
-    val subsection: String? = "",
-    val title: String? = "",
-    val abstract: String? = "",
-    val byline: String? = "",
-    @Json(name = "updated_date")
-    val updateDate: String? = "",
-    @Json(name = "des_facet")
-    val descriptionFacet: List<String>? = listOf(),
-    @Json(name = "geo_facet")
-    val geoFacet: List<String>? = listOf(),
-    val multimedia: List<DbMultimedia>? = listOf(),
-    @Json(name = "short_url")
-    val shortUrl: String? = "",
+@Entity
+data class DbNewsPiece(
+    var section: String? = "",
+    var subsection: String? = "",
+    @PrimaryKey
+    var title: String = "",
+    var abstract: String? = "",
+    var byline: String? = "",
+    var updateDate: String? = "",
+    var descriptionFacet: List<String>? = listOf(),
+    var geoFacet: List<String>? = listOf(),
+    var multimedia: List<DbMultimedia>? = listOf(),
+    var shortUrl: String? = "",
     var isFavourite: Boolean = false
 ) : Parcelable
 
