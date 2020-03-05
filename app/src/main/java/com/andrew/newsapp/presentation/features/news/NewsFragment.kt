@@ -1,10 +1,11 @@
-package com.andrew.newsapp
+package com.andrew.newsapp.presentation.features.news
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.andrew.newsapp.R
 
 /**
  * A simple [Fragment] subclass.
