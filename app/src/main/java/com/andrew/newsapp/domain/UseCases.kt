@@ -1,6 +1,8 @@
 package com.andrew.newsapp.domain
 
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagedList
+import com.andrew.newsapp.entities.DbNewsPiece
 
 sealed class TopStoriesState
 object Idle : TopStoriesState()
@@ -14,13 +16,22 @@ class RefreshTopStoriesUseCase(private val repository: TopStoriesRepository = to
         type: String,
         state: MutableLiveData<TopStoriesState>
     ) = repository
-        .takeIf {
-            if (!isConnected) state.value = Error("Check your internet connection");isConnected
-        }
-        ?.also { state.value = Loading }
+        .takeIf { onNotConnected(isConnected, state) }
+        ?.takeUnless { state.value ?: state.postValue(Idle) is Loading }
+        ?.also { state.postValue(Loading) }
         ?.run { refreshNews(type) }
-        ?.let { state.value = if (it == 200) Success else Error("Error While Loading") }
+        ?.let { state.postValue(if (it == 200) Success else Error("Error While Loading")) }
+
+    private fun onNotConnected(
+        isConnected: Boolean,
+        state: MutableLiveData<TopStoriesState>
+    ) =
+        isConnected.also { if (!isConnected) state.postValue(Error("Check your internet connection")) }
 }
 
-fun getTopStories(repository: TopStoriesRepository = topStoriesRepository) =
-    repository.retrieveNews()
+class GetTopStoriesUseCase(private val repository: TopStoriesRepository = topStoriesRepository) {
+    operator fun invoke(
+        callback: PagedList.BoundaryCallback<DbNewsPiece>,
+        pageSize: Int
+    ) = repository.retrieveNews(callback, pageSize)
+}

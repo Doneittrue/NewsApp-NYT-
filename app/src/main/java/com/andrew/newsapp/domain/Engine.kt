@@ -15,9 +15,9 @@ fun NewsPiece.toDbNewsPiece() = DbNewsPiece(
     abstract,
     byline,
     updateDate,
-    descriptionFacet,
-    geoFacet,
-    multimedia?.toDbMultimedia(),
+    descriptionFacet.toString(),
+    geoFacet.toString(),
+    multimedia?.toDbMultimedia().toString(),
     shortUrl
 )
 

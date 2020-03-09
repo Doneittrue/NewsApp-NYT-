@@ -3,33 +3,54 @@ package com.andrew.newsapp.presentation.features.news
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.paging.PagedList
+import com.andrew.newsapp.domain.GetTopStoriesUseCase
 import com.andrew.newsapp.domain.RefreshTopStoriesUseCase
 import com.andrew.newsapp.domain.TopStoriesState
-import com.andrew.newsapp.domain.getTopStories
+import com.andrew.newsapp.domain.types
 import com.andrew.newsapp.entities.DbNewsPiece
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import timber.log.Timber
+import java.util.*
 
 class NewsViewModel(
-    private val refreshTopStoriesUseCase: RefreshTopStoriesUseCase= RefreshTopStoriesUseCase(),
-    private val topStories: LiveData<List<DbNewsPiece>> = getTopStories(),
-private val mainScope:CoroutineScope=CoroutineScope(Dispatchers.Main)
-):ViewModel(){
+    private val refreshTopStoriesUseCase: RefreshTopStoriesUseCase = RefreshTopStoriesUseCase(),
+    private val getTopStories: GetTopStoriesUseCase = GetTopStoriesUseCase(),
+    private val job:Job= Job()
+) : ViewModel() {
 
-    private val _state=MutableLiveData<TopStoriesState>()
-    val state :LiveData<TopStoriesState> get() = _state
+    private val _state = MutableLiveData<TopStoriesState>()
+    val state: LiveData<TopStoriesState> get() = _state
+
+    var index = 0
+        private set
+
 
     fun refreshTopStories(
-        isConnected:Boolean,
-        type:String
-    )=mainScope.launch {
-        refreshTopStoriesUseCase(isConnected,type,_state)
+        isConnected: Boolean,
+        type: String
+    ) = runBlocking(job+Dispatchers.IO) {
+        refreshTopStoriesUseCase(isConnected, type, _state)
+        Timber.v("main scope is called")
     }
+
+
+
+    fun callAgain(
+        isConnected: Boolean,
+        type: String = types[index++]
+    ) = type
+        .takeIf { types.indexOf(it) > types.size }
+        ?.also { job.cancel() }
+        ?.let {refreshTopStories(isConnected, it) } ?: Unit
+
+    fun retrieveTopStories(
+        callback: PagedList.BoundaryCallback<DbNewsPiece>,
+        size: Int
+    ) = getTopStories(callback, size)
 
     override fun onCleared() {
         super.onCleared()
-        mainScope.cancel()
+        job.cancel()
     }
 }

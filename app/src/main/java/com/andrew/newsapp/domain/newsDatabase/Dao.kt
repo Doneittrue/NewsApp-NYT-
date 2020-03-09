@@ -1,9 +1,9 @@
 package com.andrew.newsapp.domain.newsDatabase
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.*
 import com.andrew.newsapp.entities.DbNewsPiece
-import kotlinx.coroutines.Deferred
 
 @Dao
 interface TopStoriesDao {
@@ -14,7 +14,7 @@ interface TopStoriesDao {
     fun deleteAll()
 
     @Query("SELECT * FROM DbNewsPiece")
-    fun queryAll(): LiveData<List<DbNewsPiece>>
+    fun queryAll(): DataSource.Factory<Int,DbNewsPiece>
 
     @Query("SELECT * FROM DbNewsPiece WHERE isFavourite")
     fun queryFavourites(): LiveData<List<DbNewsPiece>>

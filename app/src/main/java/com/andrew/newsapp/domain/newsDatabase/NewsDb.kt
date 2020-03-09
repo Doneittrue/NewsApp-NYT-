@@ -14,7 +14,7 @@ val dbInstance by lazy {
 }
 
 @Database(entities = [DbNewsPiece::class], version = 1, exportSchema = false)
-@TypeConverters(value = [MultiMediaConverters::class,StringConverters::class])
+//@TypeConverters(value = [MultiMediaConverters::class,StringConverters::class])
 abstract class NewsDb : RoomDatabase() {
     abstract val topStoriesDao: TopStoriesDao
 }

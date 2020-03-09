@@ -13,14 +13,16 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.nytimes.com/svc/topstories/v2/"
-private const val API_KEY = "Key"
+private const val API_KEY = "IY5K1rcQSgimN7tT04mHwx8AIcA25HtJ"
 
 //Top story types
-const val ARTS="arts"
-const val HOME_STORIES="home"
-const val SCIENCE="science"
-const val U_S="us"
-const val WORLD="world"
+const val ARTS = "arts"
+const val HOME_STORIES = "home"
+const val SCIENCE = "science"
+const val U_S = "us"
+const val WORLD = "world"
+
+val types = listOf(ARTS, HOME_STORIES, SCIENCE, U_S, WORLD)
 
 private val retrofitInstance by lazy {
     Retrofit.Builder()

@@ -68,6 +68,7 @@ data class Multimedia(
 ) : Parcelable
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 @Entity
 data class DbNewsPiece(
     var section: String? = "",
@@ -77,13 +78,14 @@ data class DbNewsPiece(
     var abstract: String? = "",
     var byline: String? = "",
     var updateDate: String? = "",
-    var descriptionFacet: List<String>? = listOf(),
-    var geoFacet: List<String>? = listOf(),
-    var multimedia: List<DbMultimedia>? = listOf(),
+    var descriptionFacet: String? ="",
+    var geoFacet: String? = "",
+    var multimedia: String? = "",
     var shortUrl: String? = "",
     var isFavourite: Boolean = false
 ) : Parcelable
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class DbMultimedia(
     val url: String? = "",

@@ -99,4 +99,8 @@ dependencies {
     }
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1"
     testImplementation 'org.mockito:mockito-inline:2.13.0'
+
+    //debugging
+    debugImplementation 'com.jakewharton.timber:timber:4.7.1'
+
 }

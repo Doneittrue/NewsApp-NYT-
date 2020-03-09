@@ -69,4 +69,30 @@ class RefreshTopStoriesUseCaseTest {
         assert(state.value is Error)
         assertThat((state.value as Error).message, `is`(errorMessage))
     }
+
+    @Test
+    fun `invoke when loading then do not proceed to request`() = runBlocking {
+        //Loading state
+        state.value=Loading
+
+        //when invoked
+        useCase(true, "", state)
+
+        //then does not proceed
+        assert(state.value is Loading)
+    }
+
+    @Test
+    fun `invoke when state has no value then proceed to request`() = runBlocking {
+        //state with no value
+        state.value=null
+        repository.responseCode=200
+
+        //when invoked
+        useCase(true, "", state)
+
+        //then requests successfully
+        assert(state.value is Success)
+    }
+
 }
