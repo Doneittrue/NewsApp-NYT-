@@ -17,12 +17,17 @@ fun NewsPiece.toDbNewsPiece() = DbNewsPiece(
     updateDate,
     descriptionFacet.toString(),
     geoFacet.toString(),
-    multimedia?.toDbMultimedia().toString(),
-    shortUrl
+    shortUrl,
+    multimedia?.thumbUrl()
 )
 
-fun List<Multimedia>.toDbMultimedia() =
-    map { DbMultimedia(it.url, it.format) }
+fun List<Multimedia>.thumbUrl(): String? {
+    forEach { if (it.height == 140 && it.width == 210) return it.url }
+    return ""
+}
+
+fun List<Multimedia>.toDbMultimedia(title: String) =
+    map { DbMultimedia(title, it.url ?: "", it.format) }
 
 
 object AppContext {

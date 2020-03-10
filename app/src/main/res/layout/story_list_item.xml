@@ -82,7 +82,8 @@
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_share_black_24dp" />
+                app:srcCompat="@drawable/ic_share_black_24dp"
+                android:contentDescription="@string/share" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

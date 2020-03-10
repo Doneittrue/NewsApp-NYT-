@@ -2,6 +2,8 @@ package com.andrew.newsapp.entities
 
 import android.os.Parcelable
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -78,16 +80,26 @@ data class DbNewsPiece(
     var abstract: String? = "",
     var byline: String? = "",
     var updateDate: String? = "",
-    var descriptionFacet: String? ="",
+    var descriptionFacet: String? = "",
     var geoFacet: String? = "",
-    var multimedia: String? = "",
     var shortUrl: String? = "",
+    var thumbUrl:String?="",
     var isFavourite: Boolean = false
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = DbNewsPiece::class,
+        parentColumns = ["title"],
+        childColumns = ["newsTitle"],
+        onDelete = CASCADE
+    )]
+)
 @Parcelize
 data class DbMultimedia(
-    val url: String? = "",
+    val newsTitle: String,
+    @PrimaryKey
+    val url: String = "",
     val format: String? = ""
 ) : Parcelable

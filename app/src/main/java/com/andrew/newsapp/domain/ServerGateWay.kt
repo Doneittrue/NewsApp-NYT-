@@ -2,8 +2,6 @@ package com.andrew.newsapp.domain
 
 import com.andrew.newsapp.entities.NewsResponse
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -32,7 +30,7 @@ private val retrofitInstance by lazy {
         .build()
 }
 
-val newsApi by lazy { retrofitInstance.create(NewsApi::class.java) }
+val newsApi: NewsApi by lazy { retrofitInstance.create(NewsApi::class.java) }
 
 interface NewsApi {
     @GET("{type}.json")
