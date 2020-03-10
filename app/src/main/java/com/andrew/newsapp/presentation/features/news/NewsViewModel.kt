@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
-import com.andrew.newsapp.domain.GetTopStoriesUseCase
-import com.andrew.newsapp.domain.RefreshTopStoriesUseCase
-import com.andrew.newsapp.domain.TopStoriesState
-import com.andrew.newsapp.domain.types
+import com.andrew.newsapp.domain.*
 import com.andrew.newsapp.entities.DbNewsPiece
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -40,14 +37,17 @@ class NewsViewModel(
         isConnected: Boolean,
         type: String = types[index++]
     ) = type
-        .takeIf { types.indexOf(it) > types.size }
-        ?.also { job.cancel() }
+        .takeIf { types.indexOf(it) < types.size-1 }
         ?.let {refreshTopStories(isConnected, it) } ?: Unit
 
     fun retrieveTopStories(
         callback: PagedList.BoundaryCallback<DbNewsPiece>,
         size: Int
     ) = getTopStories(callback, size)
+
+    fun onNonEmptyResult(notEmpty:Boolean){
+        if (notEmpty)_state.value=Success
+    }
 
     override fun onCleared() {
         super.onCleared()

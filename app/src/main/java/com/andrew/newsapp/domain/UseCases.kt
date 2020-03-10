@@ -16,17 +16,11 @@ class RefreshTopStoriesUseCase(private val repository: TopStoriesRepository = to
         type: String,
         state: MutableLiveData<TopStoriesState>
     ) = repository
-        .takeIf { onNotConnected(isConnected, state) }
+        .takeIf {isConnected }
         ?.takeUnless { state.value ?: state.postValue(Idle) is Loading }
         ?.also { state.postValue(Loading) }
         ?.run { refreshNews(type) }
-        ?.let { state.postValue(if (it == 200) Success else Error("Error While Loading")) }
-
-    private fun onNotConnected(
-        isConnected: Boolean,
-        state: MutableLiveData<TopStoriesState>
-    ) =
-        isConnected.also { if (!isConnected) state.postValue(Error("Check your internet connection")) }
+        ?.let { state.postValue(if (it == 200) Success else Error("Error While Loading $it")) }
 }
 
 class GetTopStoriesUseCase(private val repository: TopStoriesRepository = topStoriesRepository) {

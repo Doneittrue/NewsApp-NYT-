@@ -7,7 +7,8 @@ import androidx.paging.PagedList.BoundaryCallback
 import com.andrew.newsapp.domain.newsDatabase.TopStoriesDao
 import com.andrew.newsapp.domain.newsDatabase.dbInstance
 import com.andrew.newsapp.entities.DbNewsPiece
-import timber.log.Timber
+import com.andrew.newsapp.entities.NewsResponse
+import retrofit2.Response
 import java.lang.Exception
 
 interface TopStoriesRepository {
@@ -24,19 +25,24 @@ class DefaultTopStoriesRepository(
     private val localDataSource: TopStoriesDao = dbInstance.topStoriesDao,
     private val remoteDataSource: NewsApi = newsApi
 ) : TopStoriesRepository {
-    override suspend fun refreshNews(type: String) = remoteDataSource
-        .also { if (type == ARTS) localDataSource.deleteAll() }
-        .run {
-            try {
-                val response = getTopStoriesAsync(type).await()
-                Timber.i("response code: ${response.code()}")
-                if (response.isSuccessful) localDataSource.insertNews(response.body()?.news?.toDpNews())
-                response.code()
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                0
-            }
+    override suspend fun refreshNews(type: String) = remoteDataSource.run {
+        try {
+            val response = getTopStoriesAsync(type).await()
+            handleDbOperations(response, type == types[0])
+            response.code()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            -1
         }
+    }
+
+    private fun handleDbOperations(
+        response: Response<NewsResponse>,
+        isTypeMatching: Boolean
+    ) = if (response.isSuccessful) {
+        if (isTypeMatching) localDataSource.deleteAll()
+        localDataSource.insertNews(response.body()?.news?.toDpNews())
+    } else Unit
 
     override fun retrieveNews(
         callback: BoundaryCallback<DbNewsPiece>,

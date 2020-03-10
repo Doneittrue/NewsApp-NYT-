@@ -13,7 +13,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.nytimes.com/svc/topstories/v2/"
-private const val API_KEY = "IY5K1rcQSgimN7tT04mHwx8AIcA25HtJ"
+private const val API_KEY = "KEY"
 
 //Top story types
 const val ARTS = "arts"
