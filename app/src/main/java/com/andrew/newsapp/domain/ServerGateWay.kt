@@ -20,7 +20,7 @@ const val SCIENCE = "science"
 const val U_S = "us"
 const val WORLD = "world"
 
-val types = listOf(ARTS, HOME_STORIES, SCIENCE, U_S, WORLD)
+val types = listOf(ARTS, HOME_STORIES, SCIENCE, U_S, WORLD,"")
 
 private val retrofitInstance by lazy {
     Retrofit.Builder()

@@ -3,12 +3,14 @@ package com.andrew.newsapp.presentation.features.news
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import com.andrew.newsapp.domain.*
 import com.andrew.newsapp.entities.DbNewsPiece
 import kotlinx.coroutines.*
 
 class NewsViewModel(
+    isConnected: Boolean,
     private val refreshTopStoriesUseCase: RefreshTopStoriesUseCase = RefreshTopStoriesUseCase(),
     private val getTopStories: GetTopStoriesUseCase = GetTopStoriesUseCase(),
     private val job:Job= Job()
@@ -20,21 +22,23 @@ class NewsViewModel(
     var index = 0
         private set
 
-    fun refreshTopStories(
+    init {
+        refreshTopStories(isConnected, types[index])
+    }
+
+    private fun refreshTopStories(
         isConnected: Boolean,
         type: String
     ) = CoroutineScope(job+Dispatchers.IO).launch {
         refreshTopStoriesUseCase(isConnected, type, _state)
     }
 
-
-
     fun callAgain(
         isConnected: Boolean,
-        type: String = types[index++]
-    ) = type
-        .takeIf { types.indexOf(it) < types.size }
-        ?.let {refreshTopStories(isConnected, it) } ?: Unit
+        lastType: String = types[index]
+    ) = lastType
+        .takeIf { types.indexOf(it) < types.size -1}
+        ?.let {refreshTopStories(isConnected, types[index++]) } ?: Unit
 
     fun retrieveTopStories(
         callback: PagedList.BoundaryCallback<DbNewsPiece>,
@@ -48,5 +52,14 @@ class NewsViewModel(
     override fun onCleared() {
         super.onCleared()
         job.cancel()
+    }
+}
+
+
+class NewsViewModelFactory(private val isConnected:Boolean):ViewModelProvider.Factory{
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return if (modelClass.isAssignableFrom(NewsViewModel::class.java)) NewsViewModel(isConnected) as T
+        else throw IllegalArgumentException("modle class is not Identified")
     }
 }

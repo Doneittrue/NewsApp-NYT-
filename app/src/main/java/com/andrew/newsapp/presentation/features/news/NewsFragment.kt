@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.fragment_news.*
 class NewsFragment : Fragment() {
 
     private val viewModel by lazy {
-        ViewModelProvider(this, NewInstanceFactory())[NewsViewModel::class.java]
+        NewsViewModelFactory(requireActivity().checkConnectivity())
+            .let { ViewModelProvider(this, it)[NewsViewModel::class.java] }
     }
 
     private val callbacks by lazy { TopStoriesCallbacks { viewModel.callAgain(requireActivity().checkConnectivity()) } }
@@ -32,7 +33,6 @@ class NewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.refreshTopStories(requireActivity().checkConnectivity(), types[0])
         top_stories_recyclerView.adapter = topStoriesAdapter
         observeOnTopStories()
         observeStates()
