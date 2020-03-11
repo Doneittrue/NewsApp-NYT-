@@ -7,8 +7,6 @@ import androidx.paging.PagedList
 import com.andrew.newsapp.domain.*
 import com.andrew.newsapp.entities.DbNewsPiece
 import kotlinx.coroutines.*
-import timber.log.Timber
-import java.util.*
 
 class NewsViewModel(
     private val refreshTopStoriesUseCase: RefreshTopStoriesUseCase = RefreshTopStoriesUseCase(),
@@ -22,13 +20,11 @@ class NewsViewModel(
     var index = 0
         private set
 
-
     fun refreshTopStories(
         isConnected: Boolean,
         type: String
-    ) = runBlocking(job+Dispatchers.IO) {
+    ) = CoroutineScope(job+Dispatchers.IO).launch {
         refreshTopStoriesUseCase(isConnected, type, _state)
-        Timber.v("main scope is called")
     }
 
 
@@ -37,7 +33,7 @@ class NewsViewModel(
         isConnected: Boolean,
         type: String = types[index++]
     ) = type
-        .takeIf { types.indexOf(it) < types.size-1 }
+        .takeIf { types.indexOf(it) < types.size }
         ?.let {refreshTopStories(isConnected, it) } ?: Unit
 
     fun retrieveTopStories(
@@ -46,7 +42,7 @@ class NewsViewModel(
     ) = getTopStories(callback, size)
 
     fun onNonEmptyResult(notEmpty:Boolean){
-        if (notEmpty)_state.value=Success
+        _state.value=if (notEmpty)Success else Error("No stories to show please check your connection")
     }
 
     override fun onCleared() {
