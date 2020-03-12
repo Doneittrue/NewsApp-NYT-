@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="story"
             type="com.andrew.newsapp.entities.DbNewsPiece" />
@@ -91,9 +90,7 @@
                     android:background="@android:color/white"
                     android:contentDescription="@string/add_to_favourites"
                     android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    app:handleFavourite="@{story.favourite}"
-                    app:srcCompat="@drawable/favorite" />
+                    android:paddingBottom="8dp"/>
 
                 <ImageView
                     android:id="@+id/imageView"

@@ -2,8 +2,6 @@ package com.andrew.newsapp.presentation.features.news
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -29,12 +27,13 @@ class TopStoriesViewHolder(
 
     fun bind(story: DbNewsPiece) {
         binding.story = story
+        binding.favouriteImageView.setImageResource(handleFavourite(!story.isFavourite))
     }
 
 }
-@BindingAdapter("handleFavourite")
-fun ImageView.handleFavourite(isFavourite: Boolean) =
-    setImageResource(if (isFavourite) R.drawable.favorite else R.drawable.not_favorite)
+
+fun handleFavourite(isFavourite: Boolean) =
+    if (isFavourite) R.drawable.not_favorite else R.drawable.favorite
 
 class TopStoriesAdapter(
     private val onFavouriteClick: (DbNewsPiece) -> Unit
@@ -52,7 +51,9 @@ class TopStoriesAdapter(
 
     override fun onBindViewHolder(holder: TopStoriesViewHolder, position: Int) = getItem(position)
         ?.also { item ->
-            holder.binding.favouriteImageView.setOnClickListener { onFavouriteClick(item) }
+            holder.binding.favouriteImageView.run {
+                setOnClickListener { onFavouriteClick(item);setImageResource(handleFavourite(item.isFavourite)) }
+            }
         }
         ?.let { holder.bind(it) } ?: Unit
 }
