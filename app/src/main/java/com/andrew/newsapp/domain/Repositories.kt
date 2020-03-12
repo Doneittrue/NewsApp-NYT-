@@ -12,7 +12,7 @@ import retrofit2.Response
 import java.lang.Exception
 
 interface TopStoriesRepository {
-    suspend fun refreshNews(type: String): Int
+    suspend fun refreshNews(type: String): String?
     fun retrieveNews(
         callback: BoundaryCallback<DbNewsPiece>,
         pageSize: Int
@@ -29,10 +29,10 @@ class DefaultTopStoriesRepository(
         try {
             val response = getTopStoriesAsync(type).await()
             handleDbOperations(response, type == types[0])
-            response.code()
+            response.message() ?: ""
         } catch (exception: Exception) {
             exception.printStackTrace()
-            -1
+            exception.message ?:"Error while loading"
         }
     }
 

@@ -9,6 +9,7 @@ object Idle : TopStoriesState()
 object Loading : TopStoriesState()
 object Success : TopStoriesState()
 class Error(val message: String) : TopStoriesState()
+class Empty(val message: String) : TopStoriesState()
 
 class RefreshTopStoriesUseCase(private val repository: TopStoriesRepository = topStoriesRepository) {
     suspend operator fun invoke(
@@ -16,11 +17,17 @@ class RefreshTopStoriesUseCase(private val repository: TopStoriesRepository = to
         type: String,
         state: MutableLiveData<TopStoriesState>
     ) = repository
-        .takeIf {isConnected }
+        .takeIf { isConnected }
         ?.takeUnless { state.value ?: state.postValue(Idle) is Loading }
         ?.also { state.postValue(Loading) }
         ?.run { refreshNews(type) }
-        ?.let { state.postValue(if (it == 200) Success else Error("Error While Loading $it")) }
+        ?.let { state.postValue(if (it == "OK") Success else Error(it)) }
+
+    private fun onNotConnected(
+        isConnected: Boolean,
+        state: MutableLiveData<TopStoriesState>
+    ) = isConnected
+        .also { if (!it) state.postValue(Error("No internet connection")) }
 }
 
 class GetTopStoriesUseCase(private val repository: TopStoriesRepository = topStoriesRepository) {

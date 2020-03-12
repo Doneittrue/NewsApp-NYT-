@@ -9,4 +9,5 @@
     <string name="story_photo">story photo</string>
     <string name="retry">retry</string>
     <string name="share">Share</string>
+    <string name="empty_stories">No stories to show</string>
 </resources>
