@@ -17,7 +17,7 @@ class RefreshTopStoriesUseCase(private val repository: TopStoriesRepository = to
         type: String,
         state: MutableLiveData<TopStoriesState>
     ) = repository
-        .takeIf { isConnected }
+        .takeIf { onNotConnected(isConnected,state) }
         ?.takeUnless { state.value ?: state.postValue(Idle) is Loading }
         ?.also { state.postValue(Loading) }
         ?.run { refreshNews(type) }

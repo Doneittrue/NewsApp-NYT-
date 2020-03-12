@@ -25,7 +25,7 @@ class NewsFragment : Fragment() {
 
     private val callbacks by lazy { TopStoriesCallbacks { viewModel.callAgain(requireActivity().checkConnectivity()) } }
 
-    private val topStoriesAdapter by lazy { TopStoriesAdapter() }
+    private val topStoriesAdapter by lazy { TopStoriesAdapter{viewModel.updateStory(it)} }
 
     private val retryButton by lazy {
         top_stories_error_sheet.findViewById<Button>(R.id.retry_Button)

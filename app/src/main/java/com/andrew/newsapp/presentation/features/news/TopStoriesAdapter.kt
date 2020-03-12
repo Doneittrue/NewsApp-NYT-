@@ -24,7 +24,7 @@ private val diffUtilCallbacks by lazy {
 }
 
 class TopStoriesViewHolder(
-    private val binding: StoryListItemBinding
+    val binding: StoryListItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(story: DbNewsPiece) {
@@ -32,18 +32,17 @@ class TopStoriesViewHolder(
     }
 
 }
-
 @BindingAdapter("handleFavourite")
 fun ImageView.handleFavourite(isFavourite: Boolean) =
     setImageResource(if (isFavourite) R.drawable.favorite else R.drawable.not_favorite)
 
-
-class TopStoriesAdapter : PagedListAdapter<DbNewsPiece, TopStoriesViewHolder>(diffUtilCallbacks) {
+class TopStoriesAdapter(
+    private val onFavouriteClick: (DbNewsPiece) -> Unit
+) : PagedListAdapter<DbNewsPiece, TopStoriesViewHolder>(diffUtilCallbacks) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
-    ) = DataBindingUtil
-        .inflate<StoryListItemBinding>(
+    ) = DataBindingUtil.inflate<StoryListItemBinding>(
             LayoutInflater.from(parent.context),
             R.layout.story_list_item,
             parent,
@@ -52,5 +51,8 @@ class TopStoriesAdapter : PagedListAdapter<DbNewsPiece, TopStoriesViewHolder>(di
         .let { TopStoriesViewHolder(it) }
 
     override fun onBindViewHolder(holder: TopStoriesViewHolder, position: Int) = getItem(position)
+        ?.also { item ->
+            holder.binding.favouriteImageView.setOnClickListener { onFavouriteClick(item) }
+        }
         ?.let { holder.bind(it) } ?: Unit
 }

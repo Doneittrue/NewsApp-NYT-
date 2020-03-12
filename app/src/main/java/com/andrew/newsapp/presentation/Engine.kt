@@ -8,6 +8,7 @@ import androidx.databinding.BindingAdapter
 import com.andrew.newsapp.R
 import com.bumptech.glide.Glide
 
+@Suppress("DEPRECATION")
 fun Activity.checkConnectivity(): Boolean =
     (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
         .run { activeNetworkInfo != null && activeNetworkInfo.isConnected }

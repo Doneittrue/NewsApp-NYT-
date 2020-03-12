@@ -8,6 +8,7 @@ import androidx.paging.PagedList
 import com.andrew.newsapp.domain.*
 import com.andrew.newsapp.entities.DbNewsPiece
 import com.andrew.newsapp.domain.Error
+import com.andrew.newsapp.domain.newsDatabase.dbInstance
 import kotlinx.coroutines.*
 
 class NewsViewModel(
@@ -49,6 +50,11 @@ class NewsViewModel(
     fun onNonEmptyResult(notEmpty: Boolean, isConnected: Boolean) {
         if (!notEmpty) _state.value = Empty(if (isConnected) "Error while loading" else "No internet connection")
         if (notEmpty && !isConnected) _state.value = Error("No internet connection")
+    }
+
+    fun updateStory(story:DbNewsPiece)= CoroutineScope(job+Dispatchers.IO).launch {
+        story.isFavourite= !story.isFavourite
+        dbInstance.topStoriesDao.updateItem(story)
     }
 
     override fun onCleared() {

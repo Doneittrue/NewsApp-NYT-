@@ -3,11 +3,9 @@ package com.andrew.newsapp.domain.newsDatabase
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import com.andrew.newsapp.domain.AppContext
 import com.andrew.newsapp.entities.DbMultimedia
 import com.andrew.newsapp.entities.DbNewsPiece
-import com.andrew.newsapp.entities.Multimedia
 
 private const val DB_NAME = "news database"
 
